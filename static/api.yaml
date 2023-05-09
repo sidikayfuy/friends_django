@@ -1,0 +1,363 @@
+openapi: 3.0.3
+info:
+  title: Friends API (Черепанов Максим)
+  description: |-
+    Профильное задание из теста VK для стажировки на позицию Python-разработчик
+  contact:
+    email: cherepp.01@gmail.com
+  version: 1.0.0
+
+servers:
+  - url: /api/v1
+tags:
+  - name: User
+    description: Все что связано с пользователем системы
+  - name: Friend Requests
+    description: Все что связно с заявками в друзья
+paths:
+  /users:
+    post:
+      tags:
+        - User
+      summary: "Создание нового пользователя"
+      requestBody:
+        description: "JSON с данными на основе которых создается пользваотель"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: maxmax
+
+              example:
+                username: maxmax
+      responses:
+        201:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  username:
+                    type: string
+                    example: maxmaxx
+                
+              example:
+                id: 1
+                username: maxmax
+        400:
+          description: User already exist
+  /users/{userId}:
+    get:
+      tags:
+        - User
+      summary: "Получение данных о пользователе по ID"
+      security:
+        - usernameAuth: [ ]
+      parameters:
+        - name: userId
+          in: path
+          description: "ID пользователя"
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  username:
+                    type: string
+                    example: maxmaxx
+                
+              example:
+                id: 1
+                username: maxmax
+        404:
+          description: User not found
+        403:
+          description: User not authorized
+  /users/{userId}/listOfFriends:
+    get:
+      tags:
+        - User
+      summary: "Получение списка друзей пользователя по ID"
+      security:
+        - usernameAuth: [ ]
+      parameters:
+        - name: userId
+          in: path
+          description: "ID пользователя"
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  username:
+                    type: string
+                    example: maxmaxx
+                  friends:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        username:
+                          type: string
+                          example: maxmaxx
+                    example: [{'id': 2, 'username': 'some'}, {'id': 3, 'username': 'some'}]
+                
+              example:
+                id: 1
+                username: maxmax
+                friends: [{'id': 2, 'username': 'some'}, {'id': 3, 'username': 'some'}]
+        404:
+          description: User not found
+        403:
+          description: User not authorized
+  /users/{userId}/listOfFriendRequests:
+    get:
+      tags:
+        - User
+      summary: "Получение списка входящих и исходящих заявок в друзья пользователя по ID"
+      security:
+        - usernameAuth: [ ]
+      parameters:
+        - name: userId
+          in: path
+          description: "ID пользователя"
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  username:
+                    type: string
+                    example: maxmaxx
+                  requests:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        type:
+                          type: integer
+                          example: 1
+                        user:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 1
+                            username:
+                              type: string
+                              example: maxmaxx
+                    example: [{'id': 2, 'type': 1, 'user': {'id': 8, 'username': 'roror'}}, {'id': 3, 'type': 2, 'user': {'id': 9, 'username': 'rworor'}}]
+                
+              example:
+                id: 1
+                username: maxmax
+                requests: [{'id': 2, 'type': 1, 'user': {'id': 8, 'username': 'roror'}}, {'id': 3, 'type': 2, 'user': {'id': 9, 'username': 'rworor'}}]
+
+        403:
+          description: You haven't permission or not authorized
+  /users/friendStatus/{userId}/{anotherUserId}:
+    get:
+      tags:
+        - User
+      summary: "Получение статуса связи между двумя пользователями по ID"
+      security:
+        - usernameAuth: [ ]
+      parameters:
+        - name: userId
+          in: path
+          description: "ID первого пользователя"
+          required: true
+          schema:
+            type: integer
+        - name: anotherUserId
+          in: path
+          description: "ID второго пользователя"
+          required: true
+          schema:
+            type: integer
+      
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "nothing"
+              example:
+                status: "friends"
+        400:
+          description: Bad request (You can`t be friends with yourself)
+        404:
+          description: User with params not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user_with_id_not_exist:
+                    type: array
+                    items:
+                      type: string
+                    example: ["anotherUserId"]
+              example:
+                user_with_id_not_exist: ["userId", "anotherUserId"]
+        403:
+          description: You haven't permission or not authorized
+  /users/{userId}/relation/{withUserId}:
+    delete:
+      tags:
+        - User
+      summary: "Удаление из друзей"
+      security:
+        - usernameAuth: [ ]
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: withUserId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: Deleted
+        404:
+          description: User with params not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user_with_id_not_exist:
+                    type: array
+                    items:
+                      type: string
+                    example: [ "userId" ]
+              example:
+                user_with_id_not_exist: [ "userId", "withUserId" ]
+        403:
+          description: You haven't permission or not authorized
+        400:
+          description: Bad request (Not friends)
+  /friendRequests/{fromUserId}/{toUserId}:
+    post:
+      tags:
+        - Friend Requests
+      summary: "Создание заявки в друзья"
+      security:
+        - usernameAuth: [ ]
+      parameters:
+        - name: fromUserId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: toUserId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        201:
+          description: OK
+        404:
+          description: User with id not found
+        403:
+          description: You haven't permission or not authorized
+  /friendRequests/response/{requestId}/{action}:
+    post:
+      tags:
+        - Friend Requests
+      summary: "Ответ на заявку в друзья (принять/отклонить)"
+      security:
+        - usernameAuth: [ ]
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: action
+          description: "Принять 1, отклонить 0"
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK
+        404:
+          description: Action - does not exist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: array
+                    items:
+                      type: string
+                    example: Action (must be 1-accept or 0-reject)
+              example:
+                message: Action (must be 1-accept or 0-reject)
+        403:
+          description: You haven't permission or not authorized
+
+components:
+  securitySchemes:
+    usernameAuth:
+      type: apiKey
+      in: header
+      name: X-USERNAME
+

@@ -162,12 +162,14 @@ python3 manage.py test
 
          Или за один запрос
       
-         ```GET(http://localhost:8000/api/v1/users/1/listOfFriends), headers: X-USERNAME: 1```
+      ```GET(http://localhost:8000/api/v1/users/1/listOfFriends), headers: X-USERNAME: 1```
       ![friends.png](https://sun9-39.userapi.com/impg/pmWKV4F7BSQ_lhyA2nVTBo_IY8_mNGFdkYdtNg/geK_1GG8Ono.jpg?size=865x790&quality=96&sign=c4400fc83803284935770a9ba9949f4f&type=album)
+   
       4) Никакой связи с Пользователем №6
+      
       ```GET(http://localhost:8000/api/v1/users/friendStatus/1/6), headers: X-USERNAME: 1```
       
-          ![status_nothing.png](https://sun9-62.userapi.com/impg/38NmHUr17CrvXbcyhzzsWeX7zd_oll7ZSczlKA/Or5r_BNXr-Y.jpg?size=876x645&quality=96&sign=df5e99af601d73fbef5eeae28fcdf0ff&type=album)
+      ![status_nothing.png](https://sun9-62.userapi.com/impg/38NmHUr17CrvXbcyhzzsWeX7zd_oll7ZSczlKA/Or5r_BNXr-Y.jpg?size=876x645&quality=96&sign=df5e99af601d73fbef5eeae28fcdf0ff&type=album)
       
    5) Пользователь №1 удаляет из друзей Пользвоателя №5
    

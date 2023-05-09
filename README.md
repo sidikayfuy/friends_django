@@ -15,7 +15,7 @@ docker run -dp 8000:8000 -it $(docker build -q .)
 Не через Docker:
 1. Клонируем проект
 ```
-git clone
+git clone https://github.com/sidikayfuy/friends_django
 ```
 Или скачиваем данный репозиторий
 2. Переходим в папку с проектом
